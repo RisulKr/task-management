@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -28,8 +29,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findUserByUsername(String username) {
         try {
-            User user = userRepository.findByUsername(username).get();
-            return userMapper.userToUserDto(user);
+            Optional<User> user = userRepository.findByUsername(username);
+            if (user.isEmpty())throw new UsernameNotFoundException(username);
+            return userMapper.userToUserDto(user.get());
         } catch (EmptyResultDataAccessException | NullPointerException exception) {
             throw new UsernameNotFoundException(exception.getMessage());
         }

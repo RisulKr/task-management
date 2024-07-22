@@ -56,24 +56,6 @@ public class UserController {
         }
     }
 
-//    @PostMapping("/assignAsAdmin/{id}")
-//    @Operation(summary = "Assign admin role", description = "Assigns the admin role to a user")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "Role assigned successfully"),
-//            @ApiResponse(responseCode = "400", description = "Error in role assignment"),
-//            @ApiResponse(responseCode = "404", description = "User not found")
-//    })
-//    public ResponseEntity<String> assignAdminRoleToUser(
-//            @PathVariable @Parameter(description = "ID of the user to assign admin role") Integer id) {
-//        try {
-//            userService.assignAdminRole(id);
-//            return new ResponseEntity<>(role_assignment_message, HttpStatus.OK);
-//        } catch (FailedRoleAssignmentException roleAssignmentException) {
-//            return new ResponseEntity<>(roleAssignmentException.getMessage(), HttpStatus.BAD_REQUEST);
-//        }
-//    }
-
-
     @DeleteMapping("/deleteUser/{id}")
     @Operation(summary = "Delete user", description = "Deletes a user by ID")
     @ApiResponses({
