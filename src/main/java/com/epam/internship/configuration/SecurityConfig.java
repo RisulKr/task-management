@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -29,17 +30,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                request -> request.requestMatchers("/task/**").authenticated()
-                        .requestMatchers("/register").permitAll()
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/task/**").authenticated()
+                        .requestMatchers("/register/**").permitAll()
+                        .requestMatchers("/users/**").permitAll()
                         .anyRequest().permitAll()
-        )
+                )
                 .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/task"))
-                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout")
-                        .permitAll())
+                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout").permitAll())
                 .userDetailsService(userDetailsService)
                 .build();
     }
+
     @Bean
     public DelegatingPasswordEncoder passwordEncoder() {
         Map<String, PasswordEncoder> encoders = new HashMap<>();

@@ -2,7 +2,6 @@ package com.epam.internship.controller;
 
 import com.epam.internship.dto.UserDto;
 
-import com.epam.internship.exception.UserNotFoundException;
 import com.epam.internship.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,12 +32,9 @@ public class UserController {
     })
     public ResponseEntity<UserDto> getUser(
             @PathVariable @Parameter(description = "ID of the user to be found") Integer id) {
-        try {
+
             UserDto dto = userService.findUser(id);
             return new ResponseEntity<>(dto, HttpStatus.OK);
-        } catch (UserNotFoundException  exception) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @GetMapping("/getUsers/All")
@@ -48,12 +44,9 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Users not found")
     })
     public ResponseEntity<List<UserDto>> getUsers() {
-        try {
+
             List<UserDto> dto = userService.findAllUsers();
             return new ResponseEntity<>(dto, HttpStatus.OK);
-        } catch (UserNotFoundException exception) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @DeleteMapping("/deleteUser/{id}")
@@ -65,11 +58,8 @@ public class UserController {
     })
     public ResponseEntity<String> deleteUser(
             @PathVariable @Parameter(description = "ID of the user to be deleted") Integer id) {
-        try {
+
             userService.removeUser(id);
             return new ResponseEntity<>(delete_success, HttpStatus.ACCEPTED);
-        } catch (UserNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
     }
 }

@@ -1,13 +1,12 @@
 package com.epam.internship.controller;
 
 import com.epam.internship.dto.UserDto;
-import com.epam.internship.exception.UserRegistrationException;
 import com.epam.internship.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ import static com.epam.internship.utils.MessageUtils.*;
 @RequestMapping("/register")
 @Slf4j
 @CrossOrigin
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RegistrationController {
 
     private final RegisterService registerService;
@@ -38,14 +37,8 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             return listErrors(bindingResult);
         }
-        try {
-            registerService.registerUser(userDto);
-            log.info("User {} " + register_message, userDto.getUsername());
-            return new ResponseEntity<>(register_success, HttpStatus.CREATED);
-
-        } catch (UserRegistrationException e) {
-            log.info(error_message + ": {} , {}", userDto.getUsername(),e.getMessage());
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
+        registerService.registerUser(userDto);
+        log.info("User {} " + register_message, userDto.getUsername());
+        return new ResponseEntity<>(register_success, HttpStatus.CREATED);
     }
 }

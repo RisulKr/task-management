@@ -6,7 +6,7 @@ import com.epam.internship.entity.User;
 import com.epam.internship.exception.RoleNotFoundException;
 import com.epam.internship.exception.UserRegistrationException;
 import com.epam.internship.mapper.UserMapper;
-import com.epam.internship.repository.RoleRepository; // Ensure you have a repository for roles
+import com.epam.internship.repository.RoleRepository;
 import com.epam.internship.repository.UserRepository;
 import com.epam.internship.service.RegisterService;
 import com.epam.internship.utils.MessageUtils;
