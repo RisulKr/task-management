@@ -1,19 +1,19 @@
 package com.epam.internship.service;
 
-import com.epam.internship.dto.TaskDto;
+import com.epam.internship.dto.TaskDTO;
 
 
 import java.util.List;
 
 public interface TaskService {
 
-    String createTask(TaskDto taskDto);
+    void createTask(TaskDTO taskDto);
 
-    TaskDto updateTask(Integer id, TaskDto taskDto);
+    TaskDTO updateTask(Long id, TaskDTO taskDto);
 
-    String deleteTask(Integer id);
+    void deleteTask(Long id);
 
-    TaskDto getTask(Integer id);
+    TaskDTO getTask(Long id);
 
-    List<TaskDto> getAllTask();
+    List<TaskDTO> getAllTask();
 }

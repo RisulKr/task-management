@@ -2,29 +2,29 @@ package com.epam.internship.dto;
 
 import com.epam.internship.enums.Priority;
 import com.epam.internship.enums.Status;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskDto {
+public class TaskDTO {
 
-    private Integer id;
-    @NotNull(message = "title shouldn't be null")
+    private Long id;
+    @Size(min = 3, message = "Title must be at least 3 characters long")
     private String title;
-    @NotNull(message = "content shouldn't be null")
+    @Size(min = 4, message = "Title must be at least 4 characters long")
     private String content;
+    @NotNull(message = "Content can't bu null")
     private Status status;
+    @NotNull(message = "Priority can't bu null")
     private Priority priority;
-    @NotNull(message = "due date shouldn't be null")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @NotNull(message = "Due date can't bu null")
     private String dueDate;
 }

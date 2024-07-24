@@ -19,8 +19,8 @@ public class User {
     private String username;
     private String password;
     private boolean enabled;
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TaskEntity> tasks;
+//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<Task> tasks;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
