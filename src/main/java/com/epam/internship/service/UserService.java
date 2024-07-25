@@ -1,12 +1,11 @@
 package com.epam.internship.service;
 
-import com.epam.internship.dto.UserDto;
+import com.epam.internship.dto.UserDTO;
 
 import java.util.List;
 
 public interface UserService {
     String removeUser(Integer id);
-    List<UserDto> findAllUsers();
-    UserDto findUser(Integer id);
-    UserDto findUserByUsername(String username);
+    List<UserDTO> findAllUsers();
+    UserDTO findUser(Integer id);
 }

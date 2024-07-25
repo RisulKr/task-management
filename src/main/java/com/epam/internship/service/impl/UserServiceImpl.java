@@ -1,9 +1,9 @@
 package com.epam.internship.service.impl;
 
-import com.epam.internship.dto.UserDto;
+import com.epam.internship.converter.UserDTOConverter;
+import com.epam.internship.dto.UserDTO;
 import com.epam.internship.entity.User;
 import com.epam.internship.exception.*;
-import com.epam.internship.mapper.UserMapper;
 import com.epam.internship.repository.UserRepository;
 import com.epam.internship.service.UserService;
 import com.epam.internship.utils.MessageUtils;
@@ -24,23 +24,16 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private UserMapper userMapper;
-
-    @Override
-    public UserDto findUserByUsername(String username) {
-        try {
-            Optional<User> user = userRepository.findByUsername(username);
-            if (user.isEmpty())throw new UsernameNotFoundException(username);
-            return userMapper.userToUserDto(user.get());
-        } catch (EmptyResultDataAccessException | NullPointerException exception) {
-            throw new UsernameNotFoundException(exception.getMessage());
-        }
-    }
+    private UserDTOConverter userDTOConverter;
 
     @Override
     public String removeUser(Integer id) {
         try {
-            userRepository.deleteById(id);
+            User user = userRepository.findByIdAndEnabledIsTrue(id).get();
+            user.getRoles().clear();
+            user.setEnabled(false);
+            userRepository.save(user);
+            userRepository.flush();
             return MessageUtils.removed_message;
         }catch (EmptyResultDataAccessException e) {
             log.info(e.getMessage());
@@ -49,11 +42,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public UserDto findUser(Integer id) {
+    public UserDTO findUser(Integer id) {
         try {
             if (id <= 0) throw new InvalidParameterException(MessageUtils.invalid_id);
-            return userRepository.findById(id)
-                    .map(userMapper::userToUserDto)
+            return userRepository.findByIdAndEnabledIsTrue(id)
+                    .map(userDTOConverter::toDto)
                     .orElseThrow(() -> new UserNotFoundException("User with id: " + id + " not found"));
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             log.info(emptyResultDataAccessException.getMessage());
@@ -61,11 +54,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public List<UserDto> findAllUsers() {
+    public List<UserDTO> findAllUsers() {
         try {
-            return  userRepository.findAll()
+            return  userRepository.findAllByEnabledIsTrue()
                     .stream()
-                    .map(userMapper::userToUserDto)
+                    .map(userDTOConverter::toDto)
                     .toList();
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             log.info(emptyResultDataAccessException.getMessage());

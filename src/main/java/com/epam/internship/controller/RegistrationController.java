@@ -1,6 +1,7 @@
 package com.epam.internship.controller;
 
-import com.epam.internship.dto.UserDto;
+import com.epam.internship.dto.RegisterUserDTO;
+import com.epam.internship.dto.UserDTO;
 import com.epam.internship.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,12 +34,12 @@ public class RegistrationController {
             @ApiResponse(responseCode = "201", description = register_success),
             @ApiResponse(responseCode = "400", description = error_message)
     })
-    public ResponseEntity<String> createUser(@RequestBody @Valid UserDto userDto, BindingResult bindingResult) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid RegisterUserDTO registerUserDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return listErrors(bindingResult);
         }
-        registerService.registerUser(userDto);
-        log.info("User {} " + register_message, userDto.getUsername());
+        registerService.registerUser(registerUserDTO);
+        log.info("User {} " + register_message, registerUserDTO.getUserName());
         return new ResponseEntity<>(register_success, HttpStatus.CREATED);
     }
 }

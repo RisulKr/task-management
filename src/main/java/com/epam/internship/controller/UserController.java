@@ -1,6 +1,6 @@
 package com.epam.internship.controller;
 
-import com.epam.internship.dto.UserDto;
+import com.epam.internship.dto.UserDTO;
 
 import com.epam.internship.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,10 +30,10 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User found successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<UserDto> getUser(
+    public ResponseEntity<UserDTO> getUser(
             @PathVariable @Parameter(description = "ID of the user to be found") Integer id) {
 
-            UserDto dto = userService.findUser(id);
+            UserDTO dto = userService.findUser(id);
             return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -43,9 +43,9 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Users not found")
     })
-    public ResponseEntity<List<UserDto>> getUsers() {
+    public ResponseEntity<List<UserDTO>> getUsers() {
 
-            List<UserDto> dto = userService.findAllUsers();
+            List<UserDTO> dto = userService.findAllUsers();
             return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 

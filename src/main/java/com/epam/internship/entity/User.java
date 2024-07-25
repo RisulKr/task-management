@@ -22,7 +22,7 @@ public class User {
 //    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
 //    private Set<Task> tasks;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, targetEntity = Role.class)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

@@ -1,7 +1,7 @@
 package com.epam.internship.service;
 
-import com.epam.internship.dto.UserDto;
+import com.epam.internship.dto.RegisterUserDTO;
 
 public interface RegisterService {
-    String registerUser(UserDto userDto);
+    String registerUser(RegisterUserDTO userDto);
 }
