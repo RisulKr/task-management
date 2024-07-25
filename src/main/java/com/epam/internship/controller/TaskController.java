@@ -5,6 +5,7 @@ import com.epam.internship.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import static com.epam.internship.utils.ControllerUtils.listErrors;
 @RestController
 @RequestMapping("/task")
 @CrossOrigin
+@SecurityRequirement(name = "basicAuth")
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
@@ -28,7 +30,8 @@ public class TaskController {
     @Operation(summary = "Create task", description = "Create task")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task is created successfully"),
-            @ApiResponse(responseCode = "400", description = "Task is invalid")
+            @ApiResponse(responseCode = "400", description = "Task is invalid"),
+
     })
     ResponseEntity<String> createTask(@RequestBody @Valid TaskDTO taskDto, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
