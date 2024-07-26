@@ -10,10 +10,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  security:
-    user:
-      name: Risul
-      password: password
 springdoc:
   api-docs:
     enabled: true

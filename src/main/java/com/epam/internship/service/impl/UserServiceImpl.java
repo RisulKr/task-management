@@ -11,6 +11,8 @@ import com.epam.internship.service.UserService;
 import com.epam.internship.utils.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
             throw new InvalidParameterException(role_failedAssignment_message);
         User user = userRepository.findByUsernameAndId(username, id)
                     .orElseThrow(() -> new UserNotFoundException(username));
-        Role role = roleRepository.findByRoleName("ROLE_ADMIN")
+        Role role = roleRepository.findByRoleName("ADMIN")
                     .orElseThrow(() -> new RoleNotFoundException(username));
         user.getRoles().add(role);
 
@@ -50,6 +52,20 @@ public class UserServiceImpl implements UserService {
     public String removeUser(Integer id) {
             User user = userRepository.findByIdAndEnabledIsTrue(id)
                     .orElseThrow(() -> new UserNotFoundException("User not found"));
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUsername = authentication.getName();
+            UserDTO userToBeDeleted = findUser(id);
+            if (currentUsername.equals(userToBeDeleted.getUsername())) {
+                throw new IllegalOperationException("You cannot delete yourself");
+            }
+            boolean isDeletingAdmin = user.getRoles().stream()
+                .anyMatch(role -> "ADMIN".equals(role.getRoleName()));
+
+            boolean isAuthenticatedAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+            if (isDeletingAdmin && isAuthenticatedAdmin) {
+                    throw new IllegalOperationException("You cannot delete another ADMIN");
+            }
             user.getRoles().clear();
             user.setEnabled(false);
             userRepository.save(user);

@@ -44,7 +44,7 @@ public class RegisterImpl implements RegisterService {
     private User processRegistration(RegisterUserDTO registerUserDTO) {
         User userEntity = registerUserDTOConverter.toEntity(registerUserDTO);
         List<Role> roles = new ArrayList<>();
-        Role userRole = roleRepository.findByRoleName("ROLE_USER")
+        Role userRole = roleRepository.findByRoleName("USER")
                 .orElseThrow(() -> new RoleNotFoundException("Role not found"));
         roles.add(userRole);
         userEntity.setRoles(roles);

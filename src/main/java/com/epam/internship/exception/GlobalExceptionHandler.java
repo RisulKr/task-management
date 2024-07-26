@@ -19,6 +19,17 @@ public class GlobalExceptionHandler {
     public static final HttpStatus CONFLICT = HttpStatus.CONFLICT;
     public static final HttpStatus SERVER_ERROR = HttpStatus.INTERNAL_SERVER_ERROR;
 
+    @ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<ApiError> illegalOperationException(Throwable exception, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                exception.getMessage(),
+                BAD_REQUEST.name(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, NOT_FOUND);
+    }
+
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<ApiError> handleTaskNotFound(Throwable exception, HttpServletRequest request){
         ApiError apiError = new ApiError(
@@ -29,7 +40,6 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiError, NOT_FOUND);
     }
-
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiError> handleUserNotFound(Throwable exception, HttpServletRequest request){
         ApiError apiError = new ApiError(
