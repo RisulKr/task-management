@@ -37,7 +37,7 @@ public class Task {
     private Priority priority;
 
     @CreationTimestamp()
-    @Column(name = "created_datetime")
+    @Column(name = "created_datetime", nullable = false, updatable = false)
     private LocalDateTime createDate;
 
     @Column(name = "due_datetime", nullable = false)
@@ -48,5 +48,8 @@ public class Task {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    @Column(name = "is_favourite", nullable = false)
+    private boolean isFavourite;
 
 }

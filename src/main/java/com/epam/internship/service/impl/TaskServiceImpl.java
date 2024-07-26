@@ -1,26 +1,32 @@
 package com.epam.internship.service.impl;
 
-import com.epam.internship.converter.TaskDTOConverter;
+import com.epam.internship.converter.DTOConverter;
 import com.epam.internship.dto.TaskDTO;
+import com.epam.internship.dto.TaskSelectDTO;
 import com.epam.internship.entity.Task;
 import com.epam.internship.entity.User;
+import com.epam.internship.enums.Status;
 import com.epam.internship.exception.TaskNotFoundException;
 import com.epam.internship.repository.TaskRepository;
 import com.epam.internship.repository.UserRepository;
 import com.epam.internship.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static com.epam.internship.utils.MessageUtils.user_notFound_message;
 
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
-    private final TaskDTOConverter taskDTOConverter;
+    private final DTOConverter<Task,TaskDTO> taskDTOConverter;
+    private final DTOConverter<Task, TaskSelectDTO> taskSelectDTOConverter;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
@@ -61,17 +67,38 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO getTask(Long id, String username) {
+    public TaskSelectDTO getTask(Long id, String username) {
         Task task = taskRepository.findByIdAndUser_UsernameAndIsDeletedFalse(id, username)
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
-        return taskDTOConverter.toDto(task);
+        return taskSelectDTOConverter.toDto(task);
     }
 
     @Override
-    public List<TaskDTO> getAllTask(String username) {
-        List<Task> taskList = taskRepository.getAllByUser_UsernameAndIsDeletedFalse(username);
+    public Page<TaskSelectDTO> getAllTask(String username, int pageNo, int pageSize, String sortBy, String direction) {
+        Pageable pageable = getPageable(pageNo, pageSize, sortBy, direction);
+        Page<Task> taskList = taskRepository.getAllByUser_UsernameAndIsDeletedFalse(username, pageable);
 
-        return taskDTOConverter.toDtoList(taskList);
+        return taskList.map(taskSelectDTOConverter::toDto);
+    }
+
+    @Override
+    public Page<TaskSelectDTO> getAllFavouriteTask(String username, int pageNo, int pageSize, String sortBy, String direction) {
+        Pageable pageable = getPageable(pageNo, pageSize, sortBy, direction);
+        Page<Task> taskList = taskRepository.getAllByUser_UsernameAndIsFavouriteTrueAndIsDeletedFalse(username, pageable);
+
+        return taskList.map(taskSelectDTOConverter::toDto);
+    }
+
+    @Override
+    public Page<TaskSelectDTO> getAllTaskByStatus(String username, Status status, int pageNo, int pageSize, String sortBy, String direction) {
+        Pageable pageable = getPageable(pageNo, pageSize, sortBy, direction);
+        Page<Task> taskList = taskRepository.getAllByUser_UsernameAndStatusAndIsDeletedFalseOrderByDueDateAsc(username, status, pageable);
+
+        return taskList.map(taskSelectDTOConverter::toDto);
+    }
+
+    private static PageRequest getPageable(int pageNo, int pageSize, String sortBy, String direction) {
+        return PageRequest.of(pageNo, pageSize, Sort.Direction.fromString(direction), sortBy);
     }
 }

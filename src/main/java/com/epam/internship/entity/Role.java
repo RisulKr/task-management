@@ -1,18 +1,15 @@
 package com.epam.internship.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Data;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Table(name = "roles")
 public class Role {
     @Id
@@ -21,6 +18,6 @@ public class Role {
 
     private String roleName;
 
-    @ManyToMany(mappedBy = "roles",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<User> users;
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users = new ArrayList<>();
 }

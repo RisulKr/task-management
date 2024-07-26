@@ -1,7 +1,6 @@
 package com.epam.internship.service.impl;
 
 import com.epam.internship.converter.RegisterUserDTOConverter;
-import com.epam.internship.converter.UserDTOConverter;
 import com.epam.internship.dto.RegisterUserDTO;
 import com.epam.internship.entity.Role;
 import com.epam.internship.entity.User;
@@ -18,8 +17,8 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -44,7 +43,7 @@ public class RegisterImpl implements RegisterService {
 
     private User processRegistration(RegisterUserDTO registerUserDTO) {
         User userEntity = registerUserDTOConverter.toEntity(registerUserDTO);
-        Set<Role> roles = new HashSet<>();
+        List<Role> roles = new ArrayList<>();
         Role userRole = roleRepository.findByRoleName("ROLE_USER")
                 .orElseThrow(() -> new RoleNotFoundException("Role not found"));
         roles.add(userRole);

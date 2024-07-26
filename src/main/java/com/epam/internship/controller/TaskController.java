@@ -1,6 +1,8 @@
 package com.epam.internship.controller;
 
 import com.epam.internship.dto.TaskDTO;
+import com.epam.internship.dto.TaskSelectDTO;
+import com.epam.internship.enums.Status;
 import com.epam.internship.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,13 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 import static com.epam.internship.utils.ControllerUtils.listErrors;
 
@@ -83,8 +85,8 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task is not found")
     })
     @GetMapping("/{id}")
-    ResponseEntity<TaskDTO> getTask(@PathVariable Long id, Principal principal){
-        TaskDTO taskDTO = taskService.getTask(id, principal.getName());
+    ResponseEntity<TaskSelectDTO> getTask(@PathVariable Long id, Principal principal){
+        TaskSelectDTO taskDTO = taskService.getTask(id, principal.getName());
 
         return ResponseEntity.ok(taskDTO);
     };
@@ -94,8 +96,43 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
     })
     @GetMapping
-    ResponseEntity<List<TaskDTO>> getAllTask(Principal principal){
-        List<TaskDTO> taskDTOList = taskService.getAllTask(principal.getName());
+    ResponseEntity<Page<TaskSelectDTO>> getAllTask(Principal principal,
+                                                   @RequestParam(defaultValue = "0") int pageNo,
+                                                   @RequestParam(defaultValue = "10") int pageSize,
+                                                   @RequestParam(defaultValue = "dueDate") String sortBy,
+                                                   @RequestParam(defaultValue = "desc") String direction){
+        Page<TaskSelectDTO> taskDTOList = taskService.getAllTask(principal.getName(), pageNo, pageSize, sortBy, direction);
+
+        return ResponseEntity.ok(taskDTOList);
+    };
+
+    @Operation(summary = "Get all task for board", description = "Get all task by status")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
+    })
+    @GetMapping("/status")
+    ResponseEntity<Page<TaskSelectDTO>> getAllTaskForBoard(@RequestParam Status status,
+                                                           Principal principal,
+                                                           @RequestParam(defaultValue = "0") int pageNo,
+                                                           @RequestParam(defaultValue = "5") int pageSize,
+                                                           @RequestParam(defaultValue = "dueDate") String sortBy,
+                                                           @RequestParam(defaultValue = "desc") String direction){
+        Page<TaskSelectDTO> taskDTOList = taskService.getAllTaskByStatus(principal.getName(), status, pageNo, pageSize,sortBy,direction);
+
+        return ResponseEntity.ok(taskDTOList);
+    }
+
+    @Operation(summary = "Get all favourite tasks", description = "Favourite task list")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
+    })
+    @GetMapping("/favourite")
+    ResponseEntity<Page<TaskSelectDTO>> getAllFavouriteTask(Principal principal,
+                                                           @RequestParam(defaultValue = "0") int pageNo,
+                                                           @RequestParam(defaultValue = "5") int pageSize,
+                                                           @RequestParam(defaultValue = "dueDate") String sortBy,
+                                                           @RequestParam(defaultValue = "desc") String direction){
+        Page<TaskSelectDTO> taskDTOList = taskService.getAllFavouriteTask(principal.getName(),  pageNo, pageSize,sortBy,direction);
 
         return ResponseEntity.ok(taskDTOList);
     };

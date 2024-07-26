@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, NOT_FOUND);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiError> handleUserNameNotFound(Throwable exception, HttpServletRequest request){
         ApiError apiError = new ApiError(
                 request.getRequestURI(),
@@ -56,6 +57,17 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(
                 request.getRequestURI(),
                 exception.getLocalizedMessage(),
+                BAD_REQUEST.name(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument( HttpServletRequest request){
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                "Bad request",
                 BAD_REQUEST.name(),
                 LocalDateTime.now()
         );

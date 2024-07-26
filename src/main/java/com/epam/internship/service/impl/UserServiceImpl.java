@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> findAllUsers() {
        List<User> users = userRepository.findAllByEnabledIsTrue()
                .orElseThrow(UserNotFoundException::new);
-       return users.stream().map(userDTOConverter::toDto).toList();
+       return userDTOConverter.toDtoList(users);
     }
 
     private boolean isInvalidID(Integer id) {
