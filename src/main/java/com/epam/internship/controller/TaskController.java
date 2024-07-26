@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 import static com.epam.internship.utils.ControllerUtils.listErrors;
@@ -33,11 +34,13 @@ public class TaskController {
             @ApiResponse(responseCode = "400", description = "Task is invalid"),
 
     })
-    ResponseEntity<String> createTask(@RequestBody @Valid TaskDTO taskDto, BindingResult bindingResult){
+    ResponseEntity<String> createTask(Principal principal,
+                                      @RequestBody @Valid TaskDTO taskDto,
+                                      BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return listErrors(bindingResult);
         }
-        taskService.createTask(taskDto);
+        taskService.createTask(principal.getName(), taskDto);
 
         return ResponseEntity.ok("Task has been created");
     };
@@ -50,13 +53,14 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task is not found")
     })
     ResponseEntity<String> updateTask(@PathVariable Long id,
+                                      Principal principal,
                                        @RequestBody @Valid TaskDTO taskDto,
                                        BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return listErrors(bindingResult);
         }
 
-        taskService.updateTask(id, taskDto);
+        taskService.updateTask(id, principal.getName(), taskDto);
 
         return ResponseEntity.ok("Task has been updated");
     };
@@ -68,8 +72,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Task is updated successfully"),
             @ApiResponse(responseCode = "404", description = "Task is not found")
     })
-    ResponseEntity<String> deleteTask(@PathVariable Long id){
-        taskService.deleteTask(id);
+    ResponseEntity<String> deleteTask(@PathVariable Long id, Principal principal){
+        taskService.deleteTask(id, principal.getName());
         return ResponseEntity.ok("Task has been deleted");
     };
 
@@ -79,8 +83,8 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task is not found")
     })
     @GetMapping("/{id}")
-    ResponseEntity<TaskDTO> getTask(@PathVariable Long id){
-        TaskDTO taskDTO = taskService.getTask(id);
+    ResponseEntity<TaskDTO> getTask(@PathVariable Long id, Principal principal){
+        TaskDTO taskDTO = taskService.getTask(id, principal.getName());
 
         return ResponseEntity.ok(taskDTO);
     };
@@ -90,8 +94,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
     })
     @GetMapping
-    ResponseEntity<List<TaskDTO>> getAllTask(){
-        List<TaskDTO> taskDTOList = taskService.getAllTask();
+    ResponseEntity<List<TaskDTO>> getAllTask(Principal principal){
+        List<TaskDTO> taskDTOList = taskService.getAllTask(principal.getName());
 
         return ResponseEntity.ok(taskDTOList);
     };

@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
-    Optional<Task> findByIdAndIsDeletedFalse(Long id);
-    List<Task> getAllByIsDeletedFalse();
+    Optional<Task> findByIdAndUser_UsernameAndIsDeletedFalse(Long id, String username);
+    List<Task> getAllByUser_UsernameAndIsDeletedFalse(String username);
 }

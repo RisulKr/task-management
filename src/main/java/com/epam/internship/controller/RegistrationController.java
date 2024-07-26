@@ -1,7 +1,6 @@
 package com.epam.internship.controller;
 
 import com.epam.internship.dto.RegisterUserDTO;
-import com.epam.internship.dto.UserDTO;
 import com.epam.internship.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 
 import static com.epam.internship.utils.ControllerUtils.listErrors;
 import static com.epam.internship.utils.MessageUtils.*;
