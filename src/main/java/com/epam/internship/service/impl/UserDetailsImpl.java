@@ -36,9 +36,9 @@ public class UserDetailsImpl implements UserDetailsService {
                 .build();
     }
 
-    public static Collection<GrantedAuthority> mapAuthorities(List<Role> roles) {
+    private Collection<? extends GrantedAuthority> mapAuthorities(List<Role> roles) {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_".concat(role.getRoleName())))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
                 .collect(Collectors.toList());
     }
 }

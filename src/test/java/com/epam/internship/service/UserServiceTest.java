@@ -35,6 +35,6 @@ public class UserServiceTest {
         when(userService.findUser(id)).thenReturn(new UserDTO());
 
         UserDTO userDTO = userService.findUser(anyInt());
-        assertNotNull(userDTO.getRole());
+        assertNotNull(userDTO.getRoles());
     }
 }
