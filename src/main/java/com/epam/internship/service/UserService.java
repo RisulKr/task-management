@@ -8,4 +8,5 @@ public interface UserService {
     String removeUser(Integer id);
     List<UserDTO> findAllUsers();
     UserDTO findUser(Integer id);
+    String  assignAdmin(String username,Integer id);
 }

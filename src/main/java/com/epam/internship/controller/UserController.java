@@ -1,7 +1,9 @@
 package com.epam.internship.controller;
 
+import com.epam.internship.dto.RoleDTO;
 import com.epam.internship.dto.UserDTO;
 
+import com.epam.internship.entity.Role;
 import com.epam.internship.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +25,17 @@ import static com.epam.internship.utils.MessageUtils.delete_success;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @PatchMapping("/assignAdmin/{username},{id}")
+    @Operation(summary = "assigns 'ADMIN' role" , description = "gives 'ADMIN' authorization")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Admin assigned successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<String> assignAdmin(@PathVariable String username,@PathVariable Integer id){
+        String result = userService.assignAdmin(username,id);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
 
     @GetMapping("/getUser/{id}")
     @Operation(summary = "Find user", description = "Finds a user by ID")

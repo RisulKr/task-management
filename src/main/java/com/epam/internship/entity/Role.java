@@ -13,6 +13,7 @@ import static jakarta.persistence.GenerationType.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "roles")
 public class Role {
     @Id
     @GeneratedValue(strategy = IDENTITY)

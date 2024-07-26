@@ -11,13 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 @Component
 @Slf4j
 public class UserDTOConverter extends DTOConverter<User, UserDTO> {
 
-   private final RoleDTOConverter roleDTOConverter;
-
+    private final RoleDTOConverter roleDTOConverter;
 
     public UserDTOConverter(ModelMapper modelMapper, RoleDTOConverter roleDTOConverter) {
         super(modelMapper);
@@ -33,14 +31,24 @@ public class UserDTOConverter extends DTOConverter<User, UserDTO> {
     protected Class<UserDTO> getTypeDTO() {
         return UserDTO.class;
     }
+
     @Override
     public UserDTO toDto(User user) {
         UserDTO userDTO = super.toDto(user);
-        String role = user.getRoles().stream()
-                .findFirst()
-                .map(Role::getRoleName)
-                .orElse(null);
-        userDTO.setRole(role);
+        Set<RoleDTO> roles = user.getRoles().stream()
+                .map(roleDTOConverter::toDto)
+                .collect(Collectors.toSet());
+        userDTO.setRoles(roles);
         return userDTO;
+    }
+
+    @Override
+    public User toEntity(UserDTO userDTO) {
+        User user = super.toEntity(userDTO);
+        Set<Role> roles = userDTO.getRoles().stream()
+                .map(roleDTOConverter::toEntity)
+                .collect(Collectors.toSet());
+        user.setRoles(roles);
+        return user;
     }
 }

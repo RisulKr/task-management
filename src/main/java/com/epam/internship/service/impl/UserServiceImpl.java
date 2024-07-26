@@ -2,20 +2,23 @@ package com.epam.internship.service.impl;
 
 import com.epam.internship.converter.UserDTOConverter;
 import com.epam.internship.dto.UserDTO;
+import com.epam.internship.entity.Role;
 import com.epam.internship.entity.User;
 import com.epam.internship.exception.*;
+import com.epam.internship.repository.RoleRepository;
 import com.epam.internship.repository.UserRepository;
 import com.epam.internship.service.UserService;
 import com.epam.internship.utils.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+
+import static com.epam.internship.utils.MessageUtils.role_assignment_message;
+import static com.epam.internship.utils.MessageUtils.role_failedAssignment_message;
 
 
 @Service
@@ -25,45 +28,51 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private UserDTOConverter userDTOConverter;
+    private final RoleRepository roleRepository;
+
+
+    @Override
+    public String assignAdmin(String username,Integer id) {
+        if (isInvalidID(id) || Objects.isNull(username))
+            throw new InvalidParameterException(role_failedAssignment_message);
+        User user = userRepository.findByUsernameAndId(username, id)
+                    .orElseThrow(() -> new UserNotFoundException(username));
+        Role role = roleRepository.findByRoleName("ROLE_ADMIN")
+                    .orElseThrow(() -> new RoleNotFoundException(username));
+        user.getRoles().add(role);
+
+        userRepository.save(user);
+        log.info("User with 'ADMIN' role assigned, {}" , user.getRoles());
+        return role_assignment_message;
+    }
 
     @Override
     public String removeUser(Integer id) {
-        try {
-            User user = userRepository.findByIdAndEnabledIsTrue(id).get();
+            User user = userRepository.findByIdAndEnabledIsTrue(id)
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
             user.getRoles().clear();
             user.setEnabled(false);
             userRepository.save(user);
             userRepository.flush();
             return MessageUtils.removed_message;
-        }catch (EmptyResultDataAccessException e) {
-            log.info(e.getMessage());
-            throw new UserNotFoundException(e.getMessage());
-        }
     }
 
 
     public UserDTO findUser(Integer id) {
-        try {
-            if (id <= 0) throw new InvalidParameterException(MessageUtils.invalid_id);
+            if (isInvalidID(id)) throw new InvalidParameterException(MessageUtils.invalid_id);
             return userRepository.findByIdAndEnabledIsTrue(id)
                     .map(userDTOConverter::toDto)
                     .orElseThrow(() -> new UserNotFoundException("User with id: " + id + " not found"));
-        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
-            log.info(emptyResultDataAccessException.getMessage());
-            throw new UserNotFoundException(MessageUtils.user_notFound_message, emptyResultDataAccessException);
-        }
     }
 
     public List<UserDTO> findAllUsers() {
-        try {
-            return  userRepository.findAllByEnabledIsTrue()
-                    .stream()
-                    .map(userDTOConverter::toDto)
-                    .toList();
-        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
-            log.info(emptyResultDataAccessException.getMessage());
-            throw new UserNotFoundException(MessageUtils.user_notFound_message, emptyResultDataAccessException);
-        }
+       List<User> users = userRepository.findAllByEnabledIsTrue()
+               .orElseThrow(UserNotFoundException::new);
+       return users.stream().map(userDTOConverter::toDto).toList();
+    }
+
+    private boolean isInvalidID(Integer id) {
+        return id == null || id <= 0;
     }
 }
 

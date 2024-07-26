@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class MessageUtils {
+    public static final String role_failedAssignment_message = "Not assigned";
     public static final String role_assignment_message = "Successfully assigned";
     public static final String register_message = "Registered";
     public static final String removed_message = "Removed";

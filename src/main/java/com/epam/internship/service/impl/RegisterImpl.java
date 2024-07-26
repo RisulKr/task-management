@@ -28,7 +28,7 @@ public class RegisterImpl implements RegisterService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final RegisterUserDTOConverter userDTOConverter;
+    private final RegisterUserDTOConverter registerUserDTOConverter;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -43,14 +43,14 @@ public class RegisterImpl implements RegisterService {
     }
 
     private User processRegistration(RegisterUserDTO registerUserDTO) {
-        User userEntity = userDTOConverter.toEntity(registerUserDTO);
-        Role userRole = roleRepository.findByRoleName("USER")
-                .orElseThrow(() -> new RoleNotFoundException("Role 'USER' not found"));
+        User userEntity = registerUserDTOConverter.toEntity(registerUserDTO);
         Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByRoleName("ROLE_USER")
+                .orElseThrow(() -> new RoleNotFoundException("Role not found"));
         roles.add(userRole);
+        userEntity.setRoles(roles);
         userEntity.setEnabled(true);
         userEntity.setPassword(passwordEncoder.encode(registerUserDTO.getPassword()));
-        userEntity.setRoles(roles);
         return userEntity;
     }
 }

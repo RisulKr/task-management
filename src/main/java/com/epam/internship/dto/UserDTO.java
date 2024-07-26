@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 
 @Data
 @Builder
@@ -21,5 +23,5 @@ public class UserDTO {
 
     private boolean enabled;
 
-    private String role;
+    private Set<RoleDTO> roles;
 }

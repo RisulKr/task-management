@@ -5,6 +5,7 @@ import com.epam.internship.entity.User;
 import com.epam.internship.repository.UserRepository;
 import com.epam.internship.utils.MessageUtils;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserDetailsImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -26,7 +28,6 @@ public class UserDetailsImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsernameAndEnabledIsTrue(username)
                 .orElseThrow(() -> new UsernameNotFoundException(MessageUtils.user_notFound_message + " " + username));
-
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
@@ -37,7 +38,7 @@ public class UserDetailsImpl implements UserDetailsService {
 
     public static Collection<GrantedAuthority> mapAuthorities(Set<Role> roles) {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_".concat(role.getRoleName())))
                 .collect(Collectors.toList());
     }
 }
