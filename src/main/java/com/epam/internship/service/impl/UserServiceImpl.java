@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
             return MessageUtils.removed_message;
     }
 
-
+    @Override
     public UserDTO findUser(Integer id) {
             if (isInvalidID(id)) throw new InvalidParameterException(MessageUtils.invalid_id);
             return userRepository.findByIdAndEnabledIsTrue(id)
@@ -81,6 +81,7 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new UserNotFoundException("User with id: " + id + " not found"));
     }
 
+    @Override
     public List<UserDTO> findAllUsers() {
        List<User> users = userRepository.findAllByEnabledIsTrue()
                .orElseThrow(UserNotFoundException::new);

@@ -5,15 +5,12 @@ import com.epam.internship.dto.RegisterUserDTO;
 import com.epam.internship.entity.Role;
 import com.epam.internship.entity.User;
 import com.epam.internship.exception.RoleNotFoundException;
-import com.epam.internship.exception.UserRegistrationException;
 import com.epam.internship.repository.RoleRepository;
 import com.epam.internship.repository.UserRepository;
 import com.epam.internship.service.RegisterService;
 import com.epam.internship.utils.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +29,8 @@ public class RegisterImpl implements RegisterService {
 
     @Override
     public String registerUser(RegisterUserDTO userDto) {
-        try {
             userRepository.save(processRegistration(userDto));
             return MessageUtils.register_success;
-        } catch (DataIntegrityViolationException | JpaSystemException | RoleNotFoundException exception) {
-            log.info(exception.getMessage());
-            throw new UserRegistrationException(exception.getMessage(), exception);
-        }
     }
 
     private User processRegistration(RegisterUserDTO registerUserDTO) {
