@@ -1,9 +1,7 @@
 package com.epam.internship.controller;
 
-import com.epam.internship.dto.RoleDTO;
 import com.epam.internship.dto.UserDTO;
 
-import com.epam.internship.entity.Role;
 import com.epam.internship.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
