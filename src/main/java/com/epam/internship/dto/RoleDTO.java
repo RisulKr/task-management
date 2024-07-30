@@ -3,7 +3,7 @@ package com.epam.internship.dto;
 import lombok.*;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class RoleDTO {
         private String roleName;
 }
