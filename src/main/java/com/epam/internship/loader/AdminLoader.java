@@ -35,6 +35,7 @@ public class AdminLoader {
         RegisterUserDTO registerUserDTO = RegisterUserDTO.builder()
                 .userName("admin")
                 .password(passwordEncoder.encode("admin"))
+                .number("+998(000)000-00-00")
                 .build();
 
         User admin = registerUserDTOConverter.toEntity(registerUserDTO);

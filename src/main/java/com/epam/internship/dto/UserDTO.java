@@ -16,6 +16,8 @@ import java.util.Set;
 public class UserDTO {
     private Integer id;
 
+    private String number;
+
     @NotEmpty(message = "Username cannot be empty")
     private String username;
 
