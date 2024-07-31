@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.epam.internship.utils.MessageUtils.user_notFound_message;
@@ -96,6 +97,14 @@ public class TaskServiceImpl implements TaskService {
         Page<Task> taskList = taskRepository.getAllByUser_UsernameAndStatusAndIsDeletedFalseOrderByDueDateAsc(username, status, pageable);
 
         return taskList.map(taskSelectDTOConverter::toDto);
+    }
+
+    @Override
+    public int countTasksWithin7days(String userName) {
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = startDate.plusDays(6);
+
+        return taskRepository.countAllByDueDateBetweenAndUser_UsernameAndIsDeletedFalse(startDate, endDate, userName);
     }
 
     private static PageRequest getPageable(int pageNo, int pageSize, String sortBy, String direction) {
