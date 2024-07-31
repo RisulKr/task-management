@@ -19,4 +19,6 @@ public interface TaskService {
     Page<TaskSelectDTO> getAllFavouriteTask(String username, int pageNo, int pageSize, String sortBy, String direction);
 
     Page<TaskSelectDTO> getAllTaskByStatus(String username, Status status, int pageNo, int pageSize, String sortBy, String direction);
+
+    int countTasksWithin7days(String username);
 }

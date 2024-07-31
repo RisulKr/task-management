@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -115,5 +116,16 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(apiError, SERVER_ERROR);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ApiError> handleDateTimeParse( HttpServletRequest request){
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                "Error in date time format. Make sure it has to be in format: 'yyyy-mm-dd HH:mm'",
+                BAD_REQUEST.name(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, BAD_REQUEST);
     }
 }

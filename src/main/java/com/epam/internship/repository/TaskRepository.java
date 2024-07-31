@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +17,5 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
     Page<Task> getAllByUser_UsernameAndIsDeletedFalse(String username, Pageable pageable);
     Page<Task> getAllByUser_UsernameAndStatusAndIsDeletedFalseOrderByDueDateAsc(String username, Status status, Pageable pageable);
     Page<Task> getAllByUser_UsernameAndIsFavouriteTrueAndIsDeletedFalse(String username, Pageable pageable);
+    int countAllByDueDateBetweenAndUser_UsernameAndIsDeletedFalse(LocalDateTime startDate, LocalDateTime endDate, String username);
 }

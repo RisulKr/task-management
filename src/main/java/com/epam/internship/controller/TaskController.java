@@ -135,5 +135,16 @@ public class TaskController {
         Page<TaskSelectDTO> taskDTOList = taskService.getAllFavouriteTask(principal.getName(),  pageNo, pageSize,sortBy,direction);
 
         return ResponseEntity.ok(taskDTOList);
+    }
+
+    @Operation(summary = "Get reminder", description = "Notification of item that gets count of task that due date is within next week")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
+    })
+    @GetMapping("/notification")
+    ResponseEntity<Integer> getNotification(Principal principal){
+        int count = taskService.countTasksWithin7days(principal.getName());
+
+        return ResponseEntity.ok(count);
     };
 }
