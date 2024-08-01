@@ -42,14 +42,14 @@ public class TaskController {
     })
     ResponseEntity<String> createTask(Principal principal,
                                       @RequestBody @Valid TaskDTO taskDto,
-                                      BindingResult bindingResult){
+                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return listErrors(bindingResult);
         }
         taskService.createTask(principal.getName(), taskDto);
 
         return ResponseEntity.ok("Task has been created");
-    };
+    }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update task", description = "Update task by given as url id and modified task as request body")
@@ -60,8 +60,8 @@ public class TaskController {
     })
     ResponseEntity<String> updateTask(@PathVariable Long id,
                                       Principal principal,
-                                       @RequestBody @Valid TaskDTO taskDto,
-                                       BindingResult bindingResult){
+                                      @RequestBody @Valid TaskDTO taskDto,
+                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return listErrors(bindingResult);
         }
@@ -69,7 +69,7 @@ public class TaskController {
         taskService.updateTask(id, principal.getName(), taskDto);
 
         return ResponseEntity.ok("Task has been updated");
-    };
+    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -78,10 +78,10 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Task is deleted successfully"),
             @ApiResponse(responseCode = "404", description = TASK_IS_NOT_FOUND)
     })
-    ResponseEntity<String> deleteTask(@PathVariable Long id, Principal principal){
+    ResponseEntity<String> deleteTask(@PathVariable Long id, Principal principal) {
         taskService.deleteTask(id, principal.getName());
         return ResponseEntity.ok("Task has been deleted");
-    };
+    }
 
     @Operation(summary = "Get task", description = "Get task by given id")
     @ApiResponses({
@@ -89,11 +89,11 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = TASK_IS_NOT_FOUND)
     })
     @GetMapping("/{id}")
-    ResponseEntity<TaskSelectDTO> getTask(@PathVariable Long id, Principal principal){
+    ResponseEntity<TaskSelectDTO> getTask(@PathVariable Long id, Principal principal) {
         TaskSelectDTO taskDTO = taskService.getTask(id, principal.getName());
 
         return ResponseEntity.ok(taskDTO);
-    };
+    }
 
     @Operation(summary = "Get all task", description = "Get all task")
     @ApiResponses({
@@ -104,11 +104,11 @@ public class TaskController {
                                                    @RequestParam(defaultValue = "0") int pageNo,
                                                    @RequestParam(defaultValue = "10") int pageSize,
                                                    @RequestParam(defaultValue = "dueDate") String sortBy,
-                                                   @RequestParam(defaultValue = "desc") String direction){
+                                                   @RequestParam(defaultValue = "desc") String direction) {
         Page<TaskSelectDTO> taskDTOList = taskService.getAllTask(principal.getName(), pageNo, pageSize, sortBy, direction);
 
         return ResponseEntity.ok(taskDTOList);
-    };
+    }
 
     @Operation(summary = "Get all task for board", description = "Get all task by status")
     @ApiResponses({
@@ -120,8 +120,8 @@ public class TaskController {
                                                            @RequestParam(defaultValue = "0") int pageNo,
                                                            @RequestParam(defaultValue = "5") int pageSize,
                                                            @RequestParam(defaultValue = "dueDate") String sortBy,
-                                                           @RequestParam(defaultValue = "desc") String direction){
-        Page<TaskSelectDTO> taskDTOList = taskService.getAllTaskByStatus(principal.getName(), status, pageNo, pageSize,sortBy,direction);
+                                                           @RequestParam(defaultValue = "desc") String direction) {
+        Page<TaskSelectDTO> taskDTOList = taskService.getAllTaskByStatus(principal.getName(), status, pageNo, pageSize, sortBy, direction);
 
         return ResponseEntity.ok(taskDTOList);
     }
@@ -132,11 +132,11 @@ public class TaskController {
     })
     @GetMapping("/favourite")
     ResponseEntity<Page<TaskSelectDTO>> getAllFavouriteTask(Principal principal,
-                                                           @RequestParam(defaultValue = "0") int pageNo,
-                                                           @RequestParam(defaultValue = "5") int pageSize,
-                                                           @RequestParam(defaultValue = "dueDate") String sortBy,
-                                                           @RequestParam(defaultValue = "desc") String direction){
-        Page<TaskSelectDTO> taskDTOList = taskService.getAllFavouriteTask(principal.getName(),  pageNo, pageSize,sortBy,direction);
+                                                            @RequestParam(defaultValue = "0") int pageNo,
+                                                            @RequestParam(defaultValue = "5") int pageSize,
+                                                            @RequestParam(defaultValue = "dueDate") String sortBy,
+                                                            @RequestParam(defaultValue = "desc") String direction) {
+        Page<TaskSelectDTO> taskDTOList = taskService.getAllFavouriteTask(principal.getName(), pageNo, pageSize, sortBy, direction);
 
         return ResponseEntity.ok(taskDTOList);
     }
@@ -146,9 +146,9 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = FOUND_SUCCESSFULLY),
     })
     @GetMapping("/notification")
-    ResponseEntity<Integer> getNotification(Principal principal){
+    ResponseEntity<Integer> getNotification(Principal principal) {
         int count = taskService.countTasksWithin7days(principal.getName());
 
         return ResponseEntity.ok(count);
-    };
+    }
 }
