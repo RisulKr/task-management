@@ -26,14 +26,18 @@ import static com.epam.internship.utils.ControllerUtils.listErrors;
 @SecurityRequirement(name = "basicAuth")
 @RequiredArgsConstructor
 public class TaskController {
+    public static final String TASK_IS_NOT_FOUND = "Task is not found";
+    public static final String TASK_IS_UPDATED_SUCCESSFULLY = "Task is updated successfully";
+    public static final String ERROR_IN_VALIDATION = "Task is invalid and has some error in validation";
+    public static final String FOUND_SUCCESSFULLY = "Tasks is found successfully";
     private final TaskService taskService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create task", description = "Create task")
+    @Operation(summary = "Create task", description = "Create operation for task. We need to provide requestBody for task")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task is created successfully"),
-            @ApiResponse(responseCode = "400", description = "Task is invalid"),
+            @ApiResponse(responseCode = "400", description = ERROR_IN_VALIDATION),
 
     })
     ResponseEntity<String> createTask(Principal principal,
@@ -48,11 +52,11 @@ public class TaskController {
     };
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update task", description = "Update task by id")
+    @Operation(summary = "Update task", description = "Update task by given as url id and modified task as request body")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Task is updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Task is invalid"),
-            @ApiResponse(responseCode = "404", description = "Task is not found")
+            @ApiResponse(responseCode = "200", description = TASK_IS_UPDATED_SUCCESSFULLY),
+            @ApiResponse(responseCode = "400", description = ERROR_IN_VALIDATION),
+            @ApiResponse(responseCode = "404", description = TASK_IS_NOT_FOUND)
     })
     ResponseEntity<String> updateTask(@PathVariable Long id,
                                       Principal principal,
@@ -71,8 +75,8 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete task", description = "Delete task by given id")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Task is updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Task is not found")
+            @ApiResponse(responseCode = "200", description = "Task is deleted successfully"),
+            @ApiResponse(responseCode = "404", description = TASK_IS_NOT_FOUND)
     })
     ResponseEntity<String> deleteTask(@PathVariable Long id, Principal principal){
         taskService.deleteTask(id, principal.getName());
@@ -82,7 +86,7 @@ public class TaskController {
     @Operation(summary = "Get task", description = "Get task by given id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task is found successfully"),
-            @ApiResponse(responseCode = "404", description = "Task is not found")
+            @ApiResponse(responseCode = "404", description = TASK_IS_NOT_FOUND)
     })
     @GetMapping("/{id}")
     ResponseEntity<TaskSelectDTO> getTask(@PathVariable Long id, Principal principal){
@@ -93,7 +97,7 @@ public class TaskController {
 
     @Operation(summary = "Get all task", description = "Get all task")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
+            @ApiResponse(responseCode = "200", description = FOUND_SUCCESSFULLY),
     })
     @GetMapping
     ResponseEntity<Page<TaskSelectDTO>> getAllTask(Principal principal,
@@ -108,7 +112,7 @@ public class TaskController {
 
     @Operation(summary = "Get all task for board", description = "Get all task by status")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
+            @ApiResponse(responseCode = "200", description = FOUND_SUCCESSFULLY),
     })
     @GetMapping("/status")
     ResponseEntity<Page<TaskSelectDTO>> getAllTaskForBoard(@RequestParam Status status,
@@ -124,7 +128,7 @@ public class TaskController {
 
     @Operation(summary = "Get all favourite tasks", description = "Favourite task list")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
+            @ApiResponse(responseCode = "200", description = FOUND_SUCCESSFULLY),
     })
     @GetMapping("/favourite")
     ResponseEntity<Page<TaskSelectDTO>> getAllFavouriteTask(Principal principal,
@@ -139,7 +143,7 @@ public class TaskController {
 
     @Operation(summary = "Get reminder", description = "Notification of item that gets count of task that due date is within next week")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Tasks is found successfully"),
+            @ApiResponse(responseCode = "200", description = FOUND_SUCCESSFULLY),
     })
     @GetMapping("/notification")
     ResponseEntity<Integer> getNotification(Principal principal){
